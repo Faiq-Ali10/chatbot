@@ -27,7 +27,7 @@ from pydantic import BaseModel, Field, field_validator
 # Environment & Logging Setup
 # ---------------------------------------------------------------------------
 
-load_dotenv()  # Load GOOGLE_API_KEY (and any other secrets) from .env
+load_dotenv()  
 
 logging.basicConfig(
     level=logging.INFO,
@@ -278,21 +278,9 @@ async def root() -> dict:
     return {"status": "ok", "service": "ServiceAI Chatbot API"}
 
 
-@app.get("/health", tags=["Health"])
-async def health_check() -> dict:
-    """
-    Detailed health-check that confirms core dependencies are operational.
-    Returns HTTP 503 if any critical resource is unavailable.
-    """
-    try:
-        load_system_prompt()
-        get_llm()
-        return {"status": "healthy", "model": GROQ_MODEL}
-    except RuntimeError as exc:
-        raise HTTPException(
-            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
-            detail=str(exc),
-        ) from exc
+@app.get("/health")
+async def health_check():
+    return {"status": "awake"}
 
 
 @app.post(
